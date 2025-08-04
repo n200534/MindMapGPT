@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -18,10 +17,11 @@ model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
-  name      String?
+  name      String
   sessions  Session[]
   mindMaps  MindMap[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
@@ -40,6 +40,7 @@ model MindMap {
   data      Json
   roadmaps  Roadmap[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Roadmap {
@@ -50,6 +51,7 @@ model Roadmap {
   data      Json
   tasks     Task[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Task {
@@ -60,4 +62,5 @@ model Task {
   status    String
   order     Int
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
