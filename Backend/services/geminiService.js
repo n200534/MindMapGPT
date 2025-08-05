@@ -46,22 +46,22 @@ const createFallbackResources = (topic) => {
         type: 'video',
         title: `Introduction to ${topic}`,
         description: `Learn the basics of ${topic} with this comprehensive video tutorial`,
-        url: 'https://www.youtube.com/watch?v=example',
+        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
         platform: 'YouTube'
       },
       {
         type: 'article',
         title: `${topic} Fundamentals`,
         description: `A detailed guide covering the core concepts of ${topic}`,
-        url: 'https://medium.com/example',
+        url: 'https://medium.com/topic/programming',
         platform: 'Medium'
       },
       {
         type: 'documentation',
         title: `${topic} Official Documentation`,
         description: `Official documentation and guides for ${topic}`,
-        url: 'https://docs.example.com',
-        platform: 'Official Docs'
+        url: 'https://developer.mozilla.org/en-US/',
+        platform: 'MDN Web Docs'
       }
     ]
   };
@@ -182,40 +182,49 @@ const generateResources = async (topic) => {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const resourcesPrompt = `
-    For the topic "${topic}", provide a curated list of learning resources in the following JSON format:
+    For the topic "${topic}", provide a curated list of REAL learning resources with ACTUAL URLs. Do NOT use example.com or placeholder URLs. Use real, existing resources.
+
+    Please provide resources in the following JSON format:
     
     {
       "resources": [
         {
           "type": "video",
-          "title": "Resource Title",
-          "description": "Brief description",
-          "url": "https://example.com",
-          "platform": "YouTube/Coursera/etc"
+          "title": "Real Video Title",
+          "description": "Brief description of the video content",
+          "url": "https://www.youtube.com/watch?v=ACTUAL_VIDEO_ID",
+          "platform": "YouTube"
         },
         {
           "type": "article",
-          "title": "Article Title", 
-          "description": "Brief description",
-          "url": "https://example.com",
-          "platform": "Medium/GitHub/etc"
+          "title": "Real Article Title", 
+          "description": "Brief description of the article",
+          "url": "https://real-website.com/actual-article",
+          "platform": "Real Platform Name"
         },
         {
           "type": "documentation",
-          "title": "Documentation Title",
-          "description": "Brief description", 
-          "url": "https://example.com",
-          "platform": "Official Docs/etc"
+          "title": "Real Documentation Title",
+          "description": "Brief description of the documentation", 
+          "url": "https://docs.real-platform.com/actual-docs",
+          "platform": "Real Platform Documentation"
         }
       ]
     }
     
-    Please provide:
-    - 2-3 high-quality video resources (YouTube, Coursera, etc.)
-    - 2-3 informative articles or blog posts
-    - 1-2 official documentation or guides
-    - Make sure all resources are relevant and up-to-date
-    - Return only valid JSON without additional text
+    IMPORTANT REQUIREMENTS:
+    1. Use ONLY real, existing URLs - NO example.com, placeholder, or fake URLs
+    2. For YouTube videos, use actual video IDs from real educational content
+    3. For documentation, use official documentation sites (MDN, React docs, Python docs, etc.)
+    4. For articles, use real tech blogs, Medium articles, or educational websites
+    5. Focus on high-quality, educational content
+    6. Make sure all URLs are accessible and real
+    7. Return only valid JSON without additional text
+    
+    Examples of good platforms:
+    - YouTube: Real educational channels
+    - Documentation: MDN Web Docs, React Documentation, Python Documentation, etc.
+    - Articles: Medium, Dev.to, CSS-Tricks, Smashing Magazine, etc.
     `;
 
     const result = await model.generateContent(resourcesPrompt);

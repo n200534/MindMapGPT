@@ -5,6 +5,44 @@ interface ApiResponse<T> {
   error?: string;
 }
 
+interface MindMapResponse {
+  mindMap: {
+    id: string;
+    title: string;
+    data: any;
+    createdAt: string;
+    updatedAt: string;
+  };
+}
+
+interface ResourcesResponse {
+  resources: Array<{
+    type: string;
+    title: string;
+    description: string;
+    url: string;
+    platform: string;
+  }>;
+}
+
+interface RoadmapResponse {
+  roadmap: {
+    title: string;
+    phases: Array<{
+      id: string;
+      title: string;
+      description: string;
+      duration: string;
+      tasks: Array<{
+        id: string;
+        title: string;
+        description: string;
+        status: string;
+      }>;
+    }>;
+  };
+}
+
 class ApiClient {
   private baseURL: string;
 
@@ -68,22 +106,22 @@ class ApiClient {
 
   // MindMap endpoints
   async createMindMap(data: { title: string; prompt: string }) {
-    return this.request('/api/mindmap', {
+    return this.request<MindMapResponse>('/api/mindmap', {
       method: 'POST',
       body: JSON.stringify(data),
     });
   }
 
   async getMindMaps() {
-    return this.request('/api/mindmaps');
+    return this.request<{ mindMaps: Array<{ id: string; title: string; createdAt: string; updatedAt: string }> }>('/api/mindmap');
   }
 
   async getMindMap(id: string) {
-    return this.request(`/api/mindmap/${id}`);
+    return this.request<MindMapResponse>(`/api/mindmap/${id}`);
   }
 
   async updateMindMap(id: string, data: { title?: string; data?: any }) {
-    return this.request(`/api/mindmap/${id}`, {
+    return this.request<MindMapResponse>(`/api/mindmap/${id}`, {
       method: 'PUT',
       body: JSON.stringify(data),
     });
@@ -97,11 +135,11 @@ class ApiClient {
 
   // AI-powered features
   async generateResources(mindMapId: string) {
-    return this.request(`/api/mindmap/${mindMapId}/resources`);
+    return this.request<ResourcesResponse>(`/api/mindmap/${mindMapId}/resources`);
   }
 
   async generateRoadmap(mindMapId: string) {
-    return this.request(`/api/mindmap/${mindMapId}/roadmap`);
+    return this.request<RoadmapResponse>(`/api/mindmap/${mindMapId}/roadmap`);
   }
 }
 

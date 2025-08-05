@@ -156,9 +156,9 @@ const generateResourcesForMindMap = async (req, res) => {
     }
 
     // Generate resources based on the mind map title
-    const resources = await generateResources(mindMap.title);
+    const resourcesData = await generateResources(mindMap.title);
 
-    res.json({ resources });
+    res.json(resourcesData);
   } catch (error) {
     console.error('Generate resources error:', error);
     res.status(500).json({ error: error.message || 'Internal server error' });
@@ -181,9 +181,9 @@ const generateRoadmapForMindMap = async (req, res) => {
     }
 
     // Generate roadmap based on the mind map title
-    const roadmap = await generateRoadmap(mindMap.title);
+    const roadmapData = await generateRoadmap(mindMap.title);
 
-    res.json({ roadmap });
+    res.json(roadmapData);
   } catch (error) {
     console.error('Generate roadmap error:', error);
     res.status(500).json({ error: error.message || 'Internal server error' });
