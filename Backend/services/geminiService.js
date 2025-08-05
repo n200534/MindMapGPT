@@ -38,7 +38,7 @@ const createFallbackMindMap = (prompt) => {
   };
 };
 
-// Fallback resources
+// Fallback resources with real URLs
 const createFallbackResources = (topic) => {
   return {
     resources: [
@@ -46,15 +46,15 @@ const createFallbackResources = (topic) => {
         type: 'video',
         title: `Introduction to ${topic}`,
         description: `Learn the basics of ${topic} with this comprehensive video tutorial`,
-        url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        url: 'https://www.youtube.com/watch?v=PkZNo7MFNFg',
         platform: 'YouTube'
       },
       {
         type: 'article',
         title: `${topic} Fundamentals`,
         description: `A detailed guide covering the core concepts of ${topic}`,
-        url: 'https://medium.com/topic/programming',
-        platform: 'Medium'
+        url: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript',
+        platform: 'MDN Web Docs'
       },
       {
         type: 'documentation',
@@ -182,7 +182,7 @@ const generateResources = async (topic) => {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const resourcesPrompt = `
-    For the topic "${topic}", provide a curated list of REAL learning resources with ACTUAL URLs. Do NOT use example.com or placeholder URLs. Use real, existing resources.
+    For the topic "${topic}", provide a curated list of REAL learning resources with ACTUAL URLs that are currently accessible. Do NOT use example.com or placeholder URLs. Use real, existing resources.
 
     Please provide resources in the following JSON format:
     
@@ -192,7 +192,7 @@ const generateResources = async (topic) => {
           "type": "video",
           "title": "Real Video Title",
           "description": "Brief description of the video content",
-          "url": "https://www.youtube.com/watch?v=ACTUAL_VIDEO_ID",
+          "url": "https://www.youtube.com/watch?v=REAL_VIDEO_ID",
           "platform": "YouTube"
         },
         {
@@ -212,19 +212,21 @@ const generateResources = async (topic) => {
       ]
     }
     
-    IMPORTANT REQUIREMENTS:
+    CRITICAL REQUIREMENTS:
     1. Use ONLY real, existing URLs - NO example.com, placeholder, or fake URLs
-    2. For YouTube videos, use actual video IDs from real educational content
+    2. For YouTube videos, use ACTUAL video IDs from real educational content that exists and is accessible
     3. For documentation, use official documentation sites (MDN, React docs, Python docs, etc.)
     4. For articles, use real tech blogs, Medium articles, or educational websites
-    5. Focus on high-quality, educational content
+    5. Focus on high-quality, educational content that is currently available
     6. Make sure all URLs are accessible and real
     7. Return only valid JSON without additional text
     
-    Examples of good platforms:
-    - YouTube: Real educational channels
+    Examples of REAL platforms to use:
+    - YouTube: Use actual video IDs from real educational channels (e.g., "PkZNo7MFNFg" for JavaScript tutorial)
     - Documentation: MDN Web Docs, React Documentation, Python Documentation, etc.
     - Articles: Medium, Dev.to, CSS-Tricks, Smashing Magazine, etc.
+    
+    IMPORTANT: Test that the YouTube video IDs you provide actually exist and are accessible. Do not use made-up or fake video IDs.
     `;
 
     const result = await model.generateContent(resourcesPrompt);
