@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await apiClient.getCurrentUser();
       if (response.data) {
-        setUser(response.data.user);
+        setUser((response.data as { user: User }).user);
       }
     } catch (error) {
       console.error('Auth check failed:', error);
@@ -44,7 +44,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await apiClient.login({ email, password });
       if (response.data) {
-        setUser(response.data.user);
+        setUser((response.data as { user: User }).user);
         return { success: true };
       } else {
         return { success: false, error: response.error };
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await apiClient.register({ name, email, password });
       if (response.data) {
-        setUser(response.data.user);
+        setUser((response.data as { user: User }).user);
         return { success: true };
       } else {
         return { success: false, error: response.error };
