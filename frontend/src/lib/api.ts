@@ -5,17 +5,6 @@ interface ApiResponse<T> {
   error?: string;
 }
 
-interface AuthResponse {
-  success: boolean;
-  message: string;
-  token: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-  };
-}
-
 interface MindMapResponse {
   mindMap: {
     id: string;
@@ -61,44 +50,17 @@ class ApiClient {
     this.baseURL = baseURL;
   }
 
-  private getToken(): string | null {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem('token');
-    }
-    return null;
-  }
-
-  private setToken(token: string): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('token', token);
-    }
-  }
-
-  private setUser(user: any): void {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('user', JSON.stringify(user));
-    }
-  }
-
-  private clearAuth(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-    }
-  }
-
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
-    const token = this.getToken();
     
     const config: RequestInit = {
       ...options,
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
-        ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
       },
     };
@@ -106,15 +68,6 @@ class ApiClient {
     try {
       const response = await fetch(url, config);
       const data = await response.json();
-
-      // Handle 401 (unauthorized) - token might be expired
-      if (response.status === 401) {
-        this.clearAuth();
-        if (typeof window !== 'undefined') {
-          window.location.href = '/auth/login';
-        }
-        return { error: 'Session expired. Please login again.' };
-      }
 
       if (!response.ok) {
         return { error: data.error || 'An error occurred' };
@@ -128,31 +81,17 @@ class ApiClient {
 
   // Auth endpoints
   async register(userData: { name: string; email: string; password: string }) {
-    const response = await this.request<AuthResponse>('/api/register', {
+    return this.request('/api/register', {
       method: 'POST',
       body: JSON.stringify(userData),
     });
-
-    if (response.data && response.data.success && response.data.token) {
-      this.setToken(response.data.token);
-      this.setUser(response.data.user);
-    }
-
-    return response;
   }
 
   async login(credentials: { email: string; password: string }) {
-    const response = await this.request<AuthResponse>('/api/login', {
+    return this.request('/api/login', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
-
-    if (response.data && response.data.success && response.data.token) {
-      this.setToken(response.data.token);
-      this.setUser(response.data.user);
-    }
-
-    return response;
   }
 
   async getCurrentUser() {
@@ -160,14 +99,9 @@ class ApiClient {
   }
 
   async logout() {
-    const response = await this.request('/api/logout', {
+    return this.request('/api/logout', {
       method: 'POST',
     });
-    
-    // Clear auth data regardless of response
-    this.clearAuth();
-    
-    return response;
   }
 
   // MindMap endpoints
@@ -207,19 +141,6 @@ class ApiClient {
   async generateRoadmap(mindMapId: string) {
     return this.request<RoadmapResponse>(`/api/mindmap/${mindMapId}/roadmap`);
   }
-
-  // Utility methods
-  isAuthenticated(): boolean {
-    return !!this.getToken();
-  }
-
-  getStoredUser(): any {
-    if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user');
-      return user ? JSON.parse(user) : null;
-    }
-    return null;
-  }
 }
 
-export const apiClient = new ApiClient(API_BASE_URL || "http://localhost:3001");
+export const apiClient = new ApiClient(API_BASE_URL || "http://localhost:3001"); 
