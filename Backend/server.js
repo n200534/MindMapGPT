@@ -16,9 +16,20 @@ dotenv.config();
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  "https://mind-map-gpt-n200534s-projects.vercel.app", // your frontend
+  "http://localhost:3000" // for local dev (optional)
+];
+
 app.use(cors({
-  origin: "*", // your frontend domain
-  
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, origin);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
