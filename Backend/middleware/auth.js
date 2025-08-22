@@ -3,6 +3,8 @@ const { JWT_SECRET } = require('../config/auth');
 const prisma = require('../config/database');
 
 const authenticateToken = async (req, res, next) => {
+  // Check for token in cookies first (for same-domain requests)
+  // Then check Authorization header (for cross-domain requests)
   const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
   
   if (!token) {

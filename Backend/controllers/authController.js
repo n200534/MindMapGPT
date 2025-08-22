@@ -39,7 +39,7 @@ const register = async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    // Set HTTP-only cookie
+    // Set HTTP-only cookie for same-domain requests
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -49,6 +49,7 @@ const register = async (req, res) => {
 
     res.status(201).json({
       message: 'User registered successfully',
+      token: token, // Also return token in response body
       user: {
         id: user.id,
         name: user.name,
@@ -92,7 +93,7 @@ const login = async (req, res) => {
       { expiresIn: '7d' }
     );
 
-    // Set HTTP-only cookie
+    // Set HTTP-only cookie for same-domain requests
     res.cookie('token', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -102,6 +103,7 @@ const login = async (req, res) => {
 
     res.json({
       message: 'Login successful',
+      token: token, // Also return token in response body
       user: {
         id: user.id,
         name: user.name,

@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL
+import { config } from './config';
 
 interface ApiResponse<T> {
   data?: T;
@@ -56,11 +56,15 @@ class ApiClient {
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
     
+    // Get token from localStorage for cross-domain requests
+    const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
+    
     const config: RequestInit = {
       ...options,
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
+        ...(token && { 'Authorization': `Bearer ${token}` }),
         ...options.headers,
       },
     };
@@ -143,4 +147,4 @@ class ApiClient {
   }
 }
 
-export const apiClient = new ApiClient(API_BASE_URL || "http://localhost:3001"); 
+export const apiClient = new ApiClient(config.apiUrl); 

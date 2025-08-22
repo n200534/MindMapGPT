@@ -29,12 +29,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const checkAuth = async () => {
     try {
+      // Check if we have a token in localStorage
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+      
       const response = await apiClient.getCurrentUser();
       if (response.data) {
         setUser((response.data as { user: User }).user);
+      } else {
+        // If auth check fails, clear the invalid token
+        localStorage.removeItem('authToken');
       }
     } catch (error) {
       console.error('Auth check failed:', error);
+      // Clear invalid token on error
+      localStorage.removeItem('authToken');
     } finally {
       setLoading(false);
     }
@@ -44,7 +56,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await apiClient.login({ email, password });
       if (response.data) {
-        setUser((response.data as { user: User }).user);
+        const { user, token } = response.data as { user: User; token: string };
+        setUser(user);
+        // Store token in localStorage for cross-domain requests
+        if (token) {
+          localStorage.setItem('authToken', token);
+        }
         return { success: true };
       } else {
         return { success: false, error: response.error };
@@ -58,7 +75,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await apiClient.register({ name, email, password });
       if (response.data) {
-        setUser((response.data as { user: User }).user);
+        const { user, token } = response.data as { user: User; token: string };
+        setUser(user);
+        // Store token in localStorage for cross-domain requests
+        if (token) {
+          localStorage.setItem('authToken', token);
+        }
         return { success: true };
       } else {
         return { success: false, error: response.error };
@@ -72,8 +94,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await apiClient.logout();
       setUser(null);
+      // Clear token from localStorage
+      localStorage.removeItem('authToken');
     } catch (error) {
       console.error('Logout failed:', error);
+      // Still clear token even if logout request fails
+      localStorage.removeItem('authToken');
     }
   };
 

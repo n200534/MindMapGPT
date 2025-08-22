@@ -17,15 +17,22 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-  "https://mind-map-gpt-n200534s-projects.vercel.app", // your frontend
-  "http://localhost:3000" // for local dev (optional)
-];
+  "https://mind-map-gpt-n200534s-projects.vercel.app",
+  "https://mind-map-gpt-two.vercel.app", // your frontend (removed trailing slash)
+  "http://localhost:3000", // for local dev
+  process.env.FRONTEND_URL // allow environment variable override
+].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
       callback(null, origin);
     } else {
+      // Log the blocked origin for debugging
+      console.log(`CORS blocked origin: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     }
   },
