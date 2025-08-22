@@ -11,26 +11,70 @@ const createFallbackMindMap = (prompt) => {
       children: [
         {
           id: '1',
-          text: 'Main Concept 1',
+          text: 'Core Fundamentals',
           children: [
-            { id: '1-1', text: 'Sub-concept 1.1' },
-            { id: '1-2', text: 'Sub-concept 1.2' }
+            { 
+              id: '1-1', 
+              text: 'Basic Principles',
+              children: [
+                { id: '1-1-1', text: 'Key Definitions' },
+                { id: '1-1-2', text: 'Essential Concepts' },
+                { id: '1-1-3', text: 'Fundamental Rules' }
+              ]
+            },
+            { 
+              id: '1-2', 
+              text: 'Core Components',
+              children: [
+                { id: '1-2-1', text: 'Main Elements' },
+                { id: '1-2-2', text: 'Basic Structure' }
+              ]
+            }
           ]
         },
         {
           id: '2',
-          text: 'Main Concept 2',
+          text: 'Advanced Concepts',
           children: [
-            { id: '2-1', text: 'Sub-concept 2.1' },
-            { id: '2-2', text: 'Sub-concept 2.2' }
+            { 
+              id: '2-1', 
+              text: 'Complex Topics',
+              children: [
+                { id: '2-1-1', text: 'Advanced Techniques' },
+                { id: '2-1-2', text: 'Expert Methods' }
+              ]
+            },
+            { 
+              id: '2-2', 
+              text: 'Specialized Areas',
+              children: [
+                { id: '2-2-1', text: 'Niche Applications' },
+                { id: '2-2-2', text: 'Specialized Tools' },
+                { id: '2-2-3', text: 'Advanced Features' }
+              ]
+            }
           ]
         },
         {
           id: '3',
-          text: 'Main Concept 3',
+          text: 'Practical Applications',
           children: [
-            { id: '3-1', text: 'Sub-concept 3.1' },
-            { id: '3-2', text: 'Sub-concept 3.2' }
+            { 
+              id: '3-1', 
+              text: 'Real-World Usage',
+              children: [
+                { id: '3-1-1', text: 'Common Scenarios' },
+                { id: '3-1-2', text: 'Best Practices' }
+              ]
+            },
+            { 
+              id: '3-2', 
+              text: 'Implementation',
+              children: [
+                { id: '3-2-1', text: 'Step-by-Step Process' },
+                { id: '3-2-2', text: 'Tools & Resources' }
+              ]
+            }
           ]
         }
       ]
@@ -123,7 +167,7 @@ const generateMindMap = async (prompt) => {
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const mindMapPrompt = `
-    Create a structured mind map for the following topic: "${prompt}"
+    Create a comprehensive and detailed mind map for the following topic: "${prompt}"
     
     Please generate a JSON structure with the following format:
     {
@@ -135,16 +179,46 @@ const generateMindMap = async (prompt) => {
             "id": "1",
             "text": "Main Concept 1",
             "children": [
-              { "id": "1-1", "text": "Sub-concept 1.1" },
-              { "id": "1-2", "text": "Sub-concept 1.2" }
+              { 
+                "id": "1-1", 
+                "text": "Sub-concept 1.1",
+                "children": [
+                  { "id": "1-1-1", "text": "Detail 1.1.1" },
+                  { "id": "1-1-2", "text": "Detail 1.1.2" },
+                  { "id": "1-1-3", "text": "Detail 1.1.3" }
+                ]
+              },
+              { 
+                "id": "1-2", 
+                "text": "Sub-concept 1.2",
+                "children": [
+                  { "id": "1-2-1", "text": "Detail 1.2.1" },
+                  { "id": "1-2-2", "text": "Detail 1.2.2" }
+                ]
+              }
             ]
           },
           {
             "id": "2", 
             "text": "Main Concept 2",
             "children": [
-              { "id": "2-1", "text": "Sub-concept 2.1" },
-              { "id": "2-2", "text": "Sub-concept 2.2" }
+              { 
+                "id": "2-1", 
+                "text": "Sub-concept 2.1",
+                "children": [
+                  { "id": "2-1-1", "text": "Detail 2.1.1" },
+                  { "id": "2-1-2", "text": "Detail 2.1.2" }
+                ]
+              },
+              { 
+                "id": "2-2", 
+                "text": "Sub-concept 2.2",
+                "children": [
+                  { "id": "2-2-1", "text": "Detail 2.2.1" },
+                  { "id": "2-2-2", "text": "Detail 2.2.2" },
+                  { "id": "2-2-3", "text": "Detail 2.2.3" }
+                ]
+              }
             ]
           }
         ]
@@ -152,11 +226,15 @@ const generateMindMap = async (prompt) => {
     }
     
     Make sure to:
-    1. Create 3-5 main concepts that are relevant to the topic
-    2. Each main concept should have 2-4 sub-concepts
-    3. Use clear, concise text for each node
-    4. Ensure the structure is logical and educational
-    5. Return only valid JSON without any additional text
+    1. Create 4-6 main concepts that are highly relevant to the topic
+    2. Each main concept should have 3-5 sub-concepts
+    3. Each sub-concept should have 2-4 detailed points
+    4. Use clear, specific, and educational text for each node
+    5. Include practical examples, key principles, and important details
+    6. Ensure the structure is logical, comprehensive, and actionable
+    7. Make it suitable for learning and understanding the topic deeply
+    8. Return only valid JSON without any additional text
+    9. Use descriptive text that provides real value, not just generic terms
     `;
 
     const result = await model.generateContent(mindMapPrompt);
